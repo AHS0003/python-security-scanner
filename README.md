@@ -15,4 +15,4 @@ Simple Python security scanner that detects dangerous functions and insecure cod
 ## Usage
 
 ```bash
-python security_scanner.py sample_vulnerable.py
+python security_scanner.py sample_vulnerable.py# python-security-scanner
