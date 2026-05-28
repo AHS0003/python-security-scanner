@@ -1,6 +1,6 @@
 # Python Security Scanner
 
-Simple Python security scanner that detects dangerous functions and insecure coding patterns.
+Simple Python simulation security scanner that detects dangerous functions and insecure coding patterns.
 
 ## Features
 
