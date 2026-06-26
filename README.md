@@ -1,4 +1,4 @@
-# 🔐 Python SAST Agent
+# Python SAST Agent
 
 Autonomous static application security testing (SAST) agent for Python files. Detects common application vulnerabilities through pattern-based code analysis, generates remediation advice, and exposes its scanning engine via a REST API — designed with the same logic as a security-analysis assistant agent.
 
