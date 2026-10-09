@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sast-agent
+  namespace: sast-monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sast-agent
+  template:
+    metadata:
+      labels:
+        app: sast-agent
+    spec:
+      containers:
+        - name: sast-agent
+          image: python-sast-agent:monitoring
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 5000
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"

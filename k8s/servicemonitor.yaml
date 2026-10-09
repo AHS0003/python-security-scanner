@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: sast-agent
+  namespace: sast-monitoring
+  labels:
+    app: sast-agent
+    release: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: sast-agent
+  namespaceSelector:
+    matchNames:
+      - sast-monitoring
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
