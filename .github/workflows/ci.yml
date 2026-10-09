@@ -1,0 +1,52 @@
+name: SAST Agent CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check Python syntax
+        run: python -m compileall -q api.py security_scanner.py
+
+      - name: Test Flask API and metrics
+        run: |
+          python - <<'PY'
+          from api import app
+
+          client = app.test_client()
+
+          assert client.get("/health").status_code == 200
+          assert client.get("/rules").status_code == 200
+          assert client.get("/metrics").status_code == 200
+
+          response = client.post(
+              "/scan/code",
+              json={"code": 'password = "demo123"\neval("1+1")'}
+          )
+
+          assert response.status_code == 200
+          assert response.json["status"] == "ok"
+          assert "sast_scans_total" in client.get("/metrics").get_data(as_text=True)
+
+          print("API and Prometheus smoke tests passed")
+          PY
+
+      - name: Build Docker image
+        run: docker build -t python-sast-agent:ci .
